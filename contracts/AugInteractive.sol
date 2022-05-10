@@ -51,6 +51,7 @@ contract AugInteractive is ERC721, ERC721Enumerable, VRFConsumerBaseV2 {
     struct Experience {
         string name;
         string description;
+        string image;
         string creator;
         string category;
         string accessLink;
@@ -77,7 +78,6 @@ contract AugInteractive is ERC721, ERC721Enumerable, VRFConsumerBaseV2 {
     string private attr4='"}],"image": "';
 
     string private license = "MIT License";
-    string private image = "ipfs://QmSUHwYWsqcWecw1zyjzcsoy7RbsUs6mXe9rJsGW9DBNeC";
 
     event ExperienceRequested(uint256 indexed requestId, address indexed user);
     event ExperienceFulfilled(uint256 indexed requestId, uint256 indexed uniqueParam);
@@ -98,7 +98,7 @@ contract AugInteractive is ERC721, ERC721Enumerable, VRFConsumerBaseV2 {
     /**
      * Register Augmented Interactive Experience
      */
-    function registerExperience(string memory _name, string memory _description, string memory _creator, string memory _category, string memory _accessLink) public returns (uint256 requestId) {
+    function registerExperience(string memory _name, string memory _description, string memory _image, string memory _creator, string memory _category, string memory _accessLink) public returns (uint256 requestId) {
         require(holder[_msgSender()] == 0, "AIE: Already requested registration");
         requestId = COORDINATOR.requestRandomWords(
             s_keyHash,
@@ -109,7 +109,7 @@ contract AugInteractive is ERC721, ERC721Enumerable, VRFConsumerBaseV2 {
         );
         buyer[requestId] = _msgSender();
         holder[_msgSender()] = REQUEST_IN_PROGRESS;
-        requests[requestId] = Experience(_name, _description, _creator, _category, _accessLink, 0);
+        requests[requestId] = Experience(_name, _description, _image, _creator, _category, _accessLink, 0);
         emit ExperienceRequested(requestId, _msgSender());
         return requestId;
     }
@@ -140,7 +140,7 @@ contract AugInteractive is ERC721, ERC721Enumerable, VRFConsumerBaseV2 {
         string memory uniqueParamInString = uint256(experiences[tokenId].uniqueVal).toString();
 
         // Generate token's metadataURI in json
-        string memory _tokenURI = string(abi.encodePacked(md0, Base64.encode(bytes(string(abi.encodePacked(md_start, md1, experiences[tokenId].name, md2, experiences[tokenId].description, getTraits(experiences[tokenId]), image, md3, experiences[tokenId].accessLink, "?uniqueParam=", uniqueParamInString, md_end))))));
+        string memory _tokenURI = string(abi.encodePacked(md0, Base64.encode(bytes(string(abi.encodePacked(md_start, md1, experiences[tokenId].name, md2, experiences[tokenId].description, getTraits(experiences[tokenId]), experiences[tokenId].image, md3, experiences[tokenId].accessLink, "?uniqueParam=", uniqueParamInString,"?tokenId=", tokenId, md_end))))));
         return _tokenURI;
     }
 

@@ -19,7 +19,7 @@ async function main() {
 
   await augInteractive.deployed();
 
-  console.log("AugInteractive deployed to:", augInteractive.address);
+  console.log("AugInteractiveExp deployed to:", augInteractive.address);
 }
 
 // We recommend this pattern to be able to use async/await everywhere
