@@ -137,10 +137,10 @@ contract AugInteractive is ERC721, ERC721Enumerable, VRFConsumerBaseV2 {
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
         require(_exists(tokenId), "AIE: Non-Existent Token");
 
-        string memory uniqueParamInString = uint256(experiences[tokenId].uniqueVal).toString();
+        string memory params = string(abi.encodePacked("?uniqueParam=", uint256(experiences[tokenId].uniqueVal).toString(),"?tokenId=", uint256(tokenId).toString()));
 
         // Generate token's metadataURI in json
-        string memory _tokenURI = string(abi.encodePacked(md0, Base64.encode(bytes(string(abi.encodePacked(md_start, md1, experiences[tokenId].name, md2, experiences[tokenId].description, getTraits(experiences[tokenId]), experiences[tokenId].image, md3, experiences[tokenId].accessLink, "?uniqueParam=", uniqueParamInString,"?tokenId=", tokenId, md_end))))));
+        string memory _tokenURI = string(abi.encodePacked(md0, Base64.encode(bytes(string(abi.encodePacked(md_start, md1, experiences[tokenId].name, md2, experiences[tokenId].description, getTraits(experiences[tokenId]), experiences[tokenId].image, md3, experiences[tokenId].accessLink, params, md_end))))));
         return _tokenURI;
     }
 
